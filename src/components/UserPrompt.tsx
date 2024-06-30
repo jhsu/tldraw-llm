@@ -8,6 +8,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { Assistant, Thread } from '../Assistant'
 import { assert } from '../lib/utils'
 import { Spinner } from './Spinner'
+import { getInstructions } from '../demos/commands/AnthropicAssistant'
+import { executeSequence } from '../demos/commands/Executor'
 
 function useAssistant<T>(assistant: Assistant<T>) {
 	const editor = useEditor()
@@ -18,10 +20,10 @@ function useAssistant<T>(assistant: Assistant<T>) {
 		setIsReady(false)
 		let isCancelled = false
 		;(async () => {
-			const systemPrompt = await assistant.getDefaultSystemPrompt()
+			// const systemPrompt = await assistant.getDefaultSystemPrompt()
 			if (isCancelled) return
 
-			await assistant.setSystemPrompt(systemPrompt)
+			// await assistant.setSystemPrompt(systemPrompt)
 			if (isCancelled) return
 
 			setIsReady(true)
@@ -49,21 +51,23 @@ function useAssistant<T>(assistant: Assistant<T>) {
 		}
 	}, [assistant, editor, isReady])
 
-	useEffect(() => {
-		if (!thread) return
-		return () => {
-			thread.cancel()
-		}
-	}, [thread])
+	// useEffect(() => {
+	// 	if (!thread) return
+	// 	return () => {
+	// 		thread.cancel()
+	// 	}
+	// }, [thread])
 
 	const start = useCallback(
 		async (input: string) => {
-			assert(thread)
-			const userMessage = thread.getUserMessage(input)
-			const result = await thread.sendMessage(userMessage)
-			await thread.handleAssistantResponse(result)
+			// assert(thread)
+			const {commands} = await getInstructions(input)
+			await executeSequence(editor, commands)
+			// const userMessage = thread.getUserMessage(input)
+			// const result = await thread.sendMessage(userMessage)
+			// await thread.handleAssistantResponse(result)
 		},
-		[thread]
+		[editor]
 	)
 
 	const restart = useCallback(async () => {

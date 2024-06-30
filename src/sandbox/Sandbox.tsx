@@ -31,6 +31,8 @@ import {
 	summarizeRun,
 } from './SandboxState'
 import { sandboxAssistants } from './sandboxAssistants'
+import { getInstructions } from '../demos/commands/AnthropicAssistant'
+import { executeSequence } from '../demos/commands/Executor'
 
 const concurrencyLimiter = new ConcurrencyLimiter(3)
 
@@ -140,9 +142,9 @@ function SandboxReady({
 		})
 
 		if (!sandbox.run) {
-			await sandbox.assistant1.state.assistant.setSystemPrompt(
-				sandbox.assistant1.state.systemPrompt
-			)
+		// 	await sandbox.assistant1.state.assistant.setSystemPrompt(
+		// 		sandbox.assistant1.state.systemPrompt
+		// 	)
 			await sandbox.assistant2.state.assistant.setSystemPrompt(
 				sandbox.assistant2.state.systemPrompt
 			)
@@ -182,9 +184,9 @@ function SandboxReady({
 		})
 
 		if (!sandbox.run) {
-			await sandbox.assistant1.state.assistant.setSystemPrompt(
-				sandbox.assistant1.state.systemPrompt
-			)
+			// await sandbox.assistant1.state.assistant.setSystemPrompt(
+			// 	sandbox.assistant1.state.systemPrompt
+			// )
 			await sandbox.assistant2.state.assistant.setSystemPrompt(
 				sandbox.assistant2.state.systemPrompt
 			)
@@ -301,16 +303,18 @@ async function runScenario(
 		const assistant1Promise = (async () => {
 			assert(scenario.editor1)
 			try {
-				const thread = await sandbox.assistant1.state.assistant.createThread(scenario.editor1)
-				const userMessage = thread.getUserMessage(scenario.prompt)
+				// const thread = await sandbox.assistant1.state.assistant.createThread(scenario.editor1)
+				const userMessage = scenario.prompt
 				updateRun((prev) => ({
 					...prev,
 					assistant1State: 'running',
 					assistant1UserMessage: userMessage,
 				}))
-				const response = await thread.sendMessage(userMessage)
+				// const response = await thread.sendMessage(userMessage)
+				const response = await getInstructions(userMessage)
 				updateRun((prev) => ({ ...prev, assistant1Output: response }))
-				await thread.handleAssistantResponse(response)
+				await executeSequence(scenario.editor1, response.commands)
+				// await thread.handleAssistantResponse(response)
 				updateRun((prev) => ({ ...prev, assistant1State: 'done' }))
 			} catch (e) {
 				console.log(e)

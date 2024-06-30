@@ -2,7 +2,7 @@ import {
 	EASINGS,
 	Editor,
 	GeoShapeGeoStyle,
-	Vec2d,
+	Vec,
 	VecLike,
 	createShapeId,
 	uniqueId,
@@ -97,7 +97,7 @@ export async function parseSequence(editor: Editor, text: string) {
 										[GeoShapeGeoStyle.id]: 'rectangle',
 									},
 								},
-								{ ephemeral: true }
+								// { ephemeral: true }
 							)
 							editor.setCurrentTool('geo')
 							break
@@ -114,7 +114,7 @@ export async function parseSequence(editor: Editor, text: string) {
 										[GeoShapeGeoStyle.id]: tool,
 									},
 								},
-								{ ephemeral: true }
+								// { ephemeral: true }
 							)
 							editor.setCurrentTool('geo')
 							break
@@ -310,7 +310,7 @@ async function movePointer(
 	opts = {} as { altKey: boolean; shiftKey: boolean; ctrlKey: boolean }
 ) {
 	const curr = editor.inputs.currentScreenPoint
-	const dist = Vec2d.Dist(curr, to)
+	const dist = Vec.Dist(curr, to)
 	const steps = Math.max(32, Math.ceil(dist / 8))
 
 	const { altKey, shiftKey, ctrlKey } = opts
@@ -321,7 +321,7 @@ async function movePointer(
 		editor.dispatch({
 			...basePoint,
 			name: 'pointer_move',
-			point: Vec2d.Lrp(curr, to, t),
+			point: Vec.Lrp(curr, to, t),
 			altKey,
 			shiftKey,
 			ctrlKey,
