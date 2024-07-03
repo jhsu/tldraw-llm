@@ -111,6 +111,7 @@ export async function execute(editor: Editor, instruction: Command) {
 					},
 					{ history: 'ignore' }
 				)
+        editor.setCurrentTool('geo')
 				break
 			case 'pill':
 			case 'diamond':
@@ -126,7 +127,7 @@ export async function execute(editor: Editor, instruction: Command) {
 					},
 					{ history: 'ignore' }
 				)
-				editor.setCurrentTool('geo')
+        editor.setCurrentTool('geo')
 				break
 		}
 		return
@@ -145,7 +146,7 @@ export async function execute(editor: Editor, instruction: Command) {
 				x,
 				y,
 				props: {
-					text: instruction.label,
+					text: instruction.text,
 				},
 			})
 			const bounds = editor.getShapePageBounds(shapeId)!

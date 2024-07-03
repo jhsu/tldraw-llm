@@ -16,11 +16,11 @@ if (!apiKey) {
 	)
 }
 
-if (!assistantId) {
-	throw Error(
-		`Error: Assistant ID not found, please create an assistant in the OpenAI platform playground and add its id to .env.VITE_OPENAI_ASSISTANT_ID`
-	)
-}
+//if (!assistantId) {
+//	throw Error(
+//		`Error: Assistant ID not found, please create an assistant in the OpenAI platform playground and add its id to .env.VITE_OPENAI_ASSISTANT_ID`
+//	)
+//}
 
 const openai = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY!,

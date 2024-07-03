@@ -49,7 +49,7 @@ export const DeleteCommandSchema = z.object({
 })
 export const LabelCommandSchema = z.object({
 	command: z.literal('LABEL'),
-	label: z.string(),
+	text: z.string(),
 	x: z.number(),
 	y: z.number(),
 })

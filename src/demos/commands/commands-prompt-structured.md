@@ -98,44 +98,47 @@ To create a copy of a shape:
 
 # Box Tool
 
-To create a box (100,200,100,100):
+When creating a box with the 'alt' modifier, it expands from x1,y1 as the center and the bottom right corer as x2,y2.
+This means that x1,y1 is the center and x2,y2 is the bottom right corner.
+
+To create a box with top left corner of (50,150) and bottom right corner of (150,250):
 
 ```sequence
 {command: 'TOOL', tool: 'box'}
 {command: 'DRAG', x1: 100, y1: 200, x2: 150, y2: 250, modifiers: ['alt']}
 ```
 
-To create a box (50,20,100,100):
+To create a box with center at -50,-30 and bottom right of 150,70:
 
 ```sequence
-TOOL box; // select the box tool
-DRAG 50 20 150 150 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 50, y1: 20, x2: 150, y2: 70, modifiers: ['alt']}
 ```
 
 To create a box (0,0,200,50):
 
 ```sequence
-TOOL box; // select the box tool
-DRAG 0 0 100 25 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 0, y1: 0, x2: 200, y2: 50, modifiers: ['alt']}
 ```
 
 To create a box (200,0,100,100):
 
 ```sequence
-TOOL box; // select the box tool
-DRAG 200 0 250 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 200, y1: 0, x2: 300, y2: 100, modifiers: ['alt']}
 ```
 
 To create two boxes (0,0,100,100) and (200,0,100,100):
 
 ```sequence
 // create the first box
-TOOL box;
-DRAG 0 0 50 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 0, y1: 0, x2: 50, y2: 50, modifiers: ['alt']}
 
 // create the second box
-TOOL box;
-DRAG 200 0 50 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 200, y1: 0, x2: 50, y2: 50, modifiers: ['alt']}
 ```
 
 # Ellipse Tool
@@ -143,27 +146,27 @@ DRAG 200 0 50 50 alt;
 To create a ellipse (100,100,100,100):
 
 ```sequence
-TOOL ellipse; // select the ellipse tool
-DRAG 100 100 150 150 alt;
+{command: 'TOOL', tool: 'ellipse'}
+{command: 'DRAG', x1: 100, y1: 100, x2: 150, y2: 150, modifiers: ['alt']}
 ```
 
 To create a ellipse (200,0,100,100):
 
 ```sequence
-TOOL ellipse; // select the ellipse tool
-DRAG 200 0 250 50 alt;
+{command: 'TOOL', tool: 'ellipse'}
+{command: 'DRAG', x1: 200, y1: 0, x2: 250, y2: 50, modifiers: ['alt']}
 ```
 
 To create two ellipses (0,0,100,100) and (200,0,100,100):
 
 ```sequence
 // create the first ellipse
-TOOL ellipse;
-DRAG 0 0 50 50 alt;
+{command: 'TOOL', tool: 'ellipse'}
+{command: 'DRAG', x1: 0, y1: 0, x2: 50, y2: 50, modifiers: ['alt']}
 
 // create the second ellipse
-TOOL ellipse;
-DRAG 200 0 50 50 alt;
+{command: 'TOOL', tool: 'ellipse'}
+{command: 'DRAG', x1: 200, y1: 0, x2: 50, y2: 50, modifiers: ['alt']}
 ```
 
 # Arrow Tool
@@ -171,60 +174,60 @@ DRAG 200 0 50 50 alt;
 To create an arrow between two points on the page:
 
 ```sequence
-TOOL arrow; // select the arrow tool
-DRAG 50 50 250 50; // drag from the start of the arrow to the end of the arrow
+{command: 'TOOL', tool: 'arrow'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 250, y2: 50}
 ```
 
 To create a shape and an arrow from the shape to a point on the page:
 
 ```sequence
 // create the first shape (a box)
-TOOL box;
-DRAG 50 50 50 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 50, y2: 50, modifiers: ['alt']}
 
-TOOL arrow; // select the arrow tool
-DRAG 50 50 250 50; // drag from the center of the first shape to the point on the page
+{command: 'TOOL', tool: 'arrow'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 250, y2: 50}
 ```
 
 To create a shape and an arrow from a point on the page to the shape:
 
 ```sequence
 // create the first shape (a box)
-TOOL box;
-DRAG 50 50 50 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 50, y2: 50, modifiers: ['alt']}
 
-TOOL arrow; // select the arrow tool
-DRAG 250 50 50 50; // drag from the point on the page to center of the shape
+{command: 'TOOL', tool: 'arrow'}
+{command: 'DRAG', x1: 250, y1: 50, x2: 50, y2: 50}
 ```
 
 To create two shapes and an arrow between them:
 
 ```sequence
 // create the first shape (a box)
-TOOL box;
-DRAG 50 50 50 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 50, y2: 50, modifiers: ['alt']}
 
 // create the second shape (a box)
-TOOL box;
-DRAG 200 50 250 100 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 200, y1: 50, x2: 250, y2: 100, modifiers: ['alt']}
 
-TOOL arrow; // select the arrow tool
-DRAG 50 50 250 50; // drag from the center of the first shape to the center of the second shape
+{command: 'TOOL', tool: 'arrow'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 250, y2: 50} // drag from the center of the first shape to the center of the second shape
 ```
 
 To send multiple sequences (to be used if and ONLY IF you are unable to fit all of your commands into a single reply):
 
 ```sequence
 // create the first shape (a box)
-TOOL box;
-DRAG 50 50 50 50 alt;
+{command: 'TOOL', tool: 'box'}
+{command: 'DRAG', x1: 50, y1: 50, x2: 50, y2: 50, modifiers: ['alt']}
 CONTINUE;
 ```
 
 ```sequence
 // create the second shape (a box)
-TOOL box;
-DRAG 200 50 250 100 alt;
+{command: 'TOOL', tool: 'box'}
+{comand: 'DRAG', x1: 200, y1: 50, x2: 250, y2: 100, modifiers: ['alt']}
 ```
 
 # Pen tool
@@ -232,58 +235,58 @@ DRAG 200 50 250 100 alt;
 To draw a dot at (0,0):
 
 ```sequence
-TOOL pen;
-MOVE 0 0;
-DOWN;
-UP;
+{command: 'TOOL', tool: 'pen'}
+{command: 'MOVE', x: 0, y: 0}
+{command: 'DOWN'}
+{command: 'UP'}
 ```
 
 To draw a vertical line between points (0,0) and (0,100):
 
 ```sequence
-TOOL pen;
-MOVE 0 0;
-DOWN;
-MOVE 0 100;
-UP;
+{command: 'TOOL', tool: 'pen'}
+{command: 'MOVE', x: 0, y: 0}
+{command: 'DOWN'}
+{command: 'MOVE', x: 0, y: 100}
+{command: 'UP'}
 ```
 
 To draw a horizontal line between points (0,0) and (100,0):
 
 ```sequence
-TOOL pen;
-MOVE 0 0;
-DOWN;
-MOVE 100 0;
-UP;
+{command: 'TOOL', tool: 'pen'}
+{command: 'MOVE', x: 0, y: 0}
+{command: 'DOWN'}
+{command: 'MOVE', x: 100, y: 0}
+{command: 'UP'}
 ```
 
 To draw the letter Z with the bounding box (0,0,100,100):
 
 ```sequence
-TOOL pen;
-MOVE -50 -50;
-DOWN;
-MOVE 50 -50;
-MOVE -50 50;
-MOVE 50 50;
-UP;
+{command: 'TOOL', tool: 'pen'}
+{command: 'MOVE', x: -50, y: -50}
+{command: 'DOWN'}
+{command: 'MOVE', x: 50, y: -50}
+{command: 'MOVE', x: -50, y: 50}
+{command: 'MOVE', x: 50, y: 50}
+{command: 'UP'}
 ```
 
 To draw a letter C with the bounding box (0,0,100,100):
 
 ```sequence
-TOOL pen;
-MOVE 50 -40;
-DOWN;
-MOVE 25 -50;
-MOVE -25 -50;
-MOVE -50 -25;
-MOVE -50 25;
-MOVE -25 50;
-MOVE 25 50;
-MOVE 50 40
-UP;
+{command: 'TOOL', tool: 'pen'}
+{command: 'MOVE', x: 50, y: -40}
+{command: 'DOWN'}
+{command: 'MOVE', x: 25, y: -50}
+{command: 'MOVE', x: -25, y: -50}
+{command: 'MOVE', x: -50, y: -25}
+{command: 'MOVE', x: -50, y: 25}
+{command: 'MOVE', x: -25, y: 50}
+{command: 'MOVE', x: 25, y: 50}
+{command: 'MOVE', x: 50, y: 40}
+{command: 'UP'}
 ```
 
 # Label Tool
@@ -291,19 +294,19 @@ UP;
 To write the word "Hello" with its center at (0,0):
 
 ```sequence
-LABEL "hello" 0 0;
+{command: 'LABEL', text: 'hello', x: 0, y: 0};
 ```
 
 To write the word "Hello" with its center at (-200,53):
 
 ```sequence
-LABEL "hello" -200 53;
+{command: 'LABEL', text: 'hello', x: -200, y: 53};
 ```
 
 To write the sentence "Today is a good day to fly" with its center at (1000,2000):
 
 ```sequence
-LABEL "Today is a good day to fly." 1000 2000;
+{command: 'LABEL', text: 'Today is a good day to fly.', x: 1000, y: 2000};
 ```
 
 # TIPS ON SUCCESS:
