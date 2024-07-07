@@ -8,8 +8,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { Assistant, Thread } from '../Assistant'
 import { assert } from '../lib/utils'
 import { Spinner } from './Spinner'
-import { getInstructions } from '../demos/commands/AnthropicAssistant'
-import { executeSequence } from '../demos/commands/Executor'
 
 function useAssistant<T>(assistant: Assistant<T>) {
 	const editor = useEditor()
@@ -19,15 +17,16 @@ function useAssistant<T>(assistant: Assistant<T>) {
 	useEffect(() => {
 		setIsReady(false)
 		let isCancelled = false
-		;(async () => {
-			// const systemPrompt = await assistant.getDefaultSystemPrompt()
-			if (isCancelled) return
+			; (async () => {
+				const systemPrompt = await assistant.getDefaultSystemPrompt()
+				if (isCancelled) return
+				await assistant.setSystemPrompt(systemPrompt)
+				const newThread = await assistant.createThread(editor)
 
-			// await assistant.setSystemPrompt(systemPrompt)
-			if (isCancelled) return
-
-			setIsReady(true)
-		})()
+				if (isCancelled) return
+				setThread(newThread)
+				setIsReady(true)
+			})()
 
 		return () => {
 			isCancelled = true
@@ -41,31 +40,30 @@ function useAssistant<T>(assistant: Assistant<T>) {
 		}
 
 		let isCancelled = false
-		;(async () => {
-			const thread = await assistant.createThread(editor)
-			if (isCancelled) return
-			setThread(thread)
-		})()
+			; (async () => {
+				const thread = await assistant.createThread(editor)
+				if (isCancelled) return
+				console.log('thread ready', thread)
+				setThread(thread)
+			})()
 		return () => {
 			isCancelled = true
 		}
 	}, [assistant, editor, isReady])
 
-	// useEffect(() => {
-	// 	if (!thread) return
-	// 	return () => {
-	// 		thread.cancel()
-	// 	}
-	// }, [thread])
+	useEffect(() => {
+		if (!thread) return
+		return () => {
+			thread.cancel()
+		}
+	}, [thread])
 
 	const start = useCallback(
 		async (input: string) => {
-			// assert(thread)
-			const {commands} = await getInstructions(input)
-			await executeSequence(editor, commands)
-			// const userMessage = thread.getUserMessage(input)
-			// const result = await thread.sendMessage(userMessage)
-			// await thread.handleAssistantResponse(result)
+			assert(thread)
+			const userMessage = thread.getUserMessage(input)
+			const result = await thread.sendMessage(userMessage)
+			await thread.handleAssistantResponse(result)
 		},
 		[editor]
 	)
@@ -77,7 +75,7 @@ function useAssistant<T>(assistant: Assistant<T>) {
 
 	const cancel = useCallback(async () => {
 		assert(thread)
-		await thread.cancel()
+		thread.cancel()
 	}, [thread])
 
 	if (!thread || !isReady) return null

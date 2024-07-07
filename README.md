@@ -22,3 +22,7 @@ OPENAI_FUNCTIONS_ASSISTANT_ID="asst_etcetcetc"
 Run `npm run dev` to start the server.
 
 See notes below on the different demos.
+
+# Collaborate
+
+multiple cursors using automerge-tldraw

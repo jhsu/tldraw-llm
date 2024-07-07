@@ -42,35 +42,35 @@ export default function Sandbox() {
 	useEffect(() => {
 		let isCancelled = false
 
-		;(async () => {
-			const order = Object.keys(scenarios)
-			const scenarioEntries = await Promise.all(
-				Object.entries(scenarios).map(async ([name, file]) => {
-					const scenario: PreparingScenarioState = {
-						name,
-						fileContents: await fetchText(file),
-						type: 'preparing',
-					}
-					return [name, scenario] as const
-				})
-			)
-			if (isCancelled) return
+			; (async () => {
+				const order = Object.keys(scenarios)
+				const scenarioEntries = await Promise.all(
+					Object.entries(scenarios).map(async ([name, file]) => {
+						const scenario: PreparingScenarioState = {
+							name,
+							fileContents: await fetchText(file),
+							type: 'preparing',
+						}
+						return [name, scenario] as const
+					})
+				)
+				if (isCancelled) return
 
-			setState({
-				key: randomId(),
-				order,
-				scenarios: Object.fromEntries(scenarioEntries),
-				assistant1: {
-					index: 0,
-					state: { type: 'preparing', assistant: sandboxAssistants[0].create() },
-				},
-				assistant2: {
-					index: 1,
-					state: { type: 'preparing', assistant: sandboxAssistants[1].create() },
-				},
-				run: null,
-			})
-		})()
+				setState({
+					key: randomId(),
+					order,
+					scenarios: Object.fromEntries(scenarioEntries),
+					assistant1: {
+						index: 0,
+						state: { type: 'preparing', assistant: sandboxAssistants[0].create() },
+					},
+					assistant2: {
+						index: 1,
+						state: { type: 'preparing', assistant: sandboxAssistants[1].create() },
+					},
+					run: null,
+				})
+			})()
 
 		return () => {
 			isCancelled = true
@@ -142,9 +142,9 @@ function SandboxReady({
 		})
 
 		if (!sandbox.run) {
-		// 	await sandbox.assistant1.state.assistant.setSystemPrompt(
-		// 		sandbox.assistant1.state.systemPrompt
-		// 	)
+			// 	await sandbox.assistant1.state.assistant.setSystemPrompt(
+			// 		sandbox.assistant1.state.systemPrompt
+			// 	)
 			await sandbox.assistant2.state.assistant.setSystemPrompt(
 				sandbox.assistant2.state.systemPrompt
 			)
@@ -303,16 +303,16 @@ async function runScenario(
 		const assistant1Promise = (async () => {
 			assert(scenario.editor1)
 			try {
-				// const thread = await sandbox.assistant1.state.assistant.createThread(scenario.editor1)
+				const thread = await sandbox.assistant1.state.assistant.createThread(scenario.editor1)
 				const userMessage = scenario.prompt
-				updateRun((prev) => ({
-					...prev,
-					assistant1State: 'running',
-					assistant1UserMessage: userMessage,
-				}))
-				// const response = await thread.sendMessage(userMessage)
-				const response = await getInstructions(userMessage)
-				updateRun((prev) => ({ ...prev, assistant1Output: response }))
+				// updateRun((prev) => ({
+				// 	...prev,
+				// 	assistant1State: 'running',
+				// 	assistant1UserMessage: userMessage,
+				// }))
+				const response = await thread.sendMessage(userMessage)
+				// const response = await getInstructions(userMessage)
+				updateRun((prev) => ({ ...prev, assistant1Output: response.commands }))
 				await executeSequence(scenario.editor1, response.commands)
 				// await thread.handleAssistantResponse(response)
 				updateRun((prev) => ({ ...prev, assistant1State: 'done' }))
@@ -325,24 +325,24 @@ async function runScenario(
 		const assistant2Promise = (async () => {
 			assert(scenario.editor2)
 			try {
-				const thread = await sandbox.assistant2.state.assistant.createThread(scenario.editor2)
+				const thread = await sandbox.assistant1.state.assistant.createThread(scenario.editor2)
 				const userMessage = thread.getUserMessage(scenario.prompt)
 				updateRun((prev) => ({
 					...prev,
-					assistant2State: 'running',
-					assistant2UserMessage: userMessage,
+					assistant1State: 'running',
+					assistant1UserMessage: userMessage,
 				}))
 				const response = await thread.sendMessage(userMessage)
-				updateRun((prev) => ({ ...prev, assistant2Output: response }))
+				updateRun((prev) => ({ ...prev, assistant1Output: response }))
 				await thread.handleAssistantResponse(response)
-				updateRun((prev) => ({ ...prev, assistant2State: 'done' }))
+				updateRun((prev) => ({ ...prev, assistant1State: 'done' }))
 			} catch (e) {
 				console.log(e)
-				updateRun((prev) => ({ ...prev, assistant2State: 'error' }))
+				updateRun((prev) => ({ ...prev, assistant1State: 'error' }))
 			}
 		})()
 
-		await Promise.all([assistant1Promise, assistant2Promise])
+		await Promise.all([assistant1Promise, assistant1Promise])
 	})
 }
 
@@ -366,11 +366,11 @@ function AssistantSettings({
 		if (state.type !== 'preparing') return
 
 		let isCancelled = false
-		;(async () => {
-			const systemPrompt = await state.assistant.getDefaultSystemPrompt()
-			if (isCancelled) return
-			setState({ type: 'ready', assistant: state.assistant, systemPrompt })
-		})()
+			; (async () => {
+				const systemPrompt = await state.assistant.getDefaultSystemPrompt()
+				if (isCancelled) return
+				setState({ type: 'ready', assistant: state.assistant, systemPrompt })
+			})()
 
 		return () => {
 			isCancelled = true
